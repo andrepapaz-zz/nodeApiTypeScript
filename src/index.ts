@@ -1,9 +1,20 @@
 import { Server } from './server';
 
-let server = new Server();
+class ApiApplication {
 
-let porta = process.env.PORT || 3000;
+    private server: Server;
+    private porta: String;
 
-server.app.listen(porta, () => {
-    console.log(`Servidor executando na porta ${porta} em ambiente de ${process.env.NODE_ENV}.`);
-});
+    constructor() {
+        this.server = new Server();
+        this.porta = process.env.PORT || "3000";
+    }
+
+    public startServer() {
+        this.server.app.listen(this.porta, () => {
+            console.log(`Servidor executando na porta ${this.porta} em ambiente de ${process.env.NODE_ENV}.`);
+        });
+    }
+}
+
+new ApiApplication().startServer();
