@@ -1,5 +1,5 @@
 import { Request, Response, Router } from 'express';
-import Produto from '../Model/Produto';
+import Produto from '../model/Produto';
 
 export class ProdutoController {
 
@@ -11,25 +11,25 @@ export class ProdutoController {
     }
 
     private routes() {
-        this._router.get('/teste', this.teste);
-        this.router.post('/', this.create);
-    }
 
-    private teste(req: Request, res: Response): void {
-        res.json({
-            teste: 'OK'
-        });
+        this._router.get('/', this.all);
+        this._router.get('/:cod', this.one);
+        this._router.post('/', this.create);
+        this._router.put('/:cod', this.update);
+        this._router.delete('/:cod', this.delete);
     }
 
     public create(req: Request, res: Response): void {
         const {
+            cod,
             nome,
-            slug,
+            descricao,
+            valor
         } = req.body;
 
         const produto = new Produto({
             nome,
-            slug,
+            cod,
         });
 
         produto
