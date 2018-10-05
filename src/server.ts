@@ -1,6 +1,6 @@
 import * as express from 'express';
 import * as bodyParser from 'body-parser';
-import { ProdutoController } from './app/ProdutoController';
+import { ProdutoController } from './controller/ProdutoController';
 import * as helmet from 'helmet';
 import * as mongoose from 'mongoose';
 

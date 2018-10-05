@@ -1,5 +1,5 @@
 import { Request, Response, Router } from 'express';
-import Produto from '../models/Produto';
+import Produto from '../model/Produto';
 
 export class ProdutoController {
 
@@ -12,11 +12,11 @@ export class ProdutoController {
 
     private routes() {
 
-        this._router.get('/', this.all);
-        this._router.get('/:cod', this.one);
+        //this._router.get('/', this.all);
+        //this._router.get('/:cod', this.one);
         this._router.post('/', this.create);
-        this._router.put('/:cod', this.update);
-        this._router.delete('/:cod', this.delete);
+        //this._router.put('/:cod', this.update);
+        //this._router.delete('/:cod', this.delete);
     }
 
     public create(req: Request, res: Response): void {
