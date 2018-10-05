@@ -1,5 +1,5 @@
 import { Request, Response, Router } from 'express';
-import Produto from '../model/Produto';
+import Produto from '../models/Produto';
 
 export class ProdutoController {
 
