@@ -20,6 +20,9 @@ const ProdutoSchema: Schema = new Schema({
     valor: {
         type: Number,
         default: 0
+    },
+    image: {
+        type: String
     }
 });
 

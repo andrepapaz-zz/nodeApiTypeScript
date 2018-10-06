@@ -1,34 +1,7 @@
 import { Request, Response, Router } from 'express';
-import Produto from '../model/Produto';
-import * as multer from 'multer'
+import User from '../model/User';
 
-const storage = multer.diskStorage({
-    destination: function (req, file, cb) {
-        cb(null, './uploads/');
-    },
-    filename: function (req, file, cb) {
-        cb(null, new Date().toISOString() + file.originalname);
-    }
-});
-
-const fileFilter = (req: Request, file: any, cb: Function) => {
-    // reject a file
-    if (file.mimetype === 'image/jpeg' || file.mimetype === 'image/png') {
-        cb(null, true);
-    } else {
-        cb(null, false);
-    }
-};
-
-const upload = multer({
-    storage: storage,
-    limits: {
-        fileSize: 1024 * 1024 * 5
-    },
-    fileFilter: fileFilter
-});
-
-export class ProdutoController {
+export class UserController {
 
     private _router: Router;
 
@@ -41,13 +14,13 @@ export class ProdutoController {
 
         this._router.get('/', this.all);
         this._router.get('/:cod', this.one);
-        this._router.post('/', upload.single('productImage'), this.create);
+        this._router.post('/', this.create);
         this._router.put('/:cod', this.update);
         this._router.delete('/:cod', this.delete);
     }
 
     public all(req: Request, res: Response): void {
-        Produto.find()
+        User.find()
             .then((data) => {
                 res.status(200).json({ data });
             })
@@ -59,7 +32,7 @@ export class ProdutoController {
     public one(req: Request, res: Response): void {
         const cod = req.params.cod;
 
-        Produto.findOne({ cod })
+        User.findOne({ cod })
             .then((data) => {
                 res.status(200).json({ data });
             })
@@ -71,23 +44,16 @@ export class ProdutoController {
 
     public create(req: Request, res: Response): void {
         const {
-            cod,
-            nome,
-            descricao,
-            valor
+            email,
+            password
         } = req.body;
-        
-        const image = req.file.path;
 
-        const produto = new Produto({
-            cod,
-            nome,
-            descricao,
-            valor,
-            image
+        const user = new User({
+            email,
+            password
         });
 
-        produto
+        user
             .save()
             .then((data) => {
                 res.status(201).json({ data });
@@ -100,7 +66,7 @@ export class ProdutoController {
     public update(req: Request, res: Response): void {
         const cod = req.params.cod;
 
-        Produto.findOneAndUpdate({ cod }, req.body)
+        User.findOneAndUpdate({ cod }, req.body)
             .then((data) => {
                 res.status(200).json({ data });
             })
@@ -112,7 +78,7 @@ export class ProdutoController {
     public delete(req: Request, res: Response): void {
         const cod = req.params.cod;
 
-        Produto.findOneAndRemove({ cod })
+        User.findOneAndRemove({ cod })
             .then(() => {
                 res.status(204).end();
             })
