@@ -1,5 +1,6 @@
 import { Request, Response, Router } from 'express';
 import User from '../model/User';
+import * as bcrypt from 'bcrypt-nodejs';
 
 export class UserController {
 
@@ -48,19 +49,24 @@ export class UserController {
             password
         } = req.body;
 
-        const user = new User({
-            email,
-            password
+        bcrypt.hash(password, "", () => {}, (err: Error, hash: string) => {
+            
+            const user = new User({
+                email,
+                password: hash
+            });
+    
+            user
+                .save()
+                .then((data) => {
+                    res.status(201).json({ data });
+                })
+                .catch((error) => {
+                    res.status(500).json({ error });
+                });
+                
         });
 
-        user
-            .save()
-            .then((data) => {
-                res.status(201).json({ data });
-            })
-            .catch((error) => {
-                res.status(500).json({ error });
-            });
     }
 
     public update(req: Request, res: Response): void {
