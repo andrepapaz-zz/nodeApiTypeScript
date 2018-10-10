@@ -9,6 +9,7 @@
             "request": "launch",
             "name": "Launch via NPM",
             "runtimeExecutable": "npm",
+            "outputCapture": "std",
             "runtimeArgs": [
                 "run-script",
                 "debug"

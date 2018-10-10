@@ -49,7 +49,9 @@ export class UserController {
             password
         } = req.body;
 
-        bcrypt.hash(password, "", () => {}, (err: Error, hash: string) => {
+        const salt = bcrypt.genSaltSync(10);
+
+        bcrypt.hash(password, salt, () => {}, (err: Error, hash: string) => {
             
             const user = new User({
                 email,
