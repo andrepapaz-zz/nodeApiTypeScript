@@ -1,13 +1,13 @@
 import { Request, Response, Router } from 'express';
 import Produto from '../model/Produto';
-import * as multer from 'multer'
+import * as multer from 'multer';
 
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
         cb(null, './uploads/');
     },
     filename: function (req, file, cb) {
-        cb(null, new Date().toISOString() + file.originalname);
+        cb(null, new Date().getTime() + '_' + file.originalname);
     }
 });
 

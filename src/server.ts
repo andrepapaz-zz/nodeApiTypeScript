@@ -7,6 +7,7 @@ import * as mongoose from 'mongoose';
 import * as morgan from 'morgan';
 import * as fs from 'fs';
 import * as path from 'path';
+import rts from 'rotating-file-stream';
 
 export class Server {
 
@@ -20,14 +21,28 @@ export class Server {
 
     private config(): void {
 
-        // create a write stream (in append mode)
-        let accessLogStream = fs.createWriteStream(path.join(__dirname, 'access.log'), {flags: 'a'})
+        let accessLogDirectory = path.join(__dirname, 'accessLog');
+
+        fs.existsSync(accessLogDirectory) || fs.mkdirSync(accessLogDirectory);
+
+        function generator(time: Date, index: String) {
+            if (!time)
+                return "accessLog.log";
+
+            return `accessLog${index}.log`;
+        }
+
+        let stream = rts(generator, {
+            path: accessLogDirectory,
+            size: '10M',
+            maxFiles: 10
+        })
 
         const MONGO_URI: string = 'mongodb://192.168.99.100:27017/martan';
         mongoose.connect(MONGO_URI || process.env.MONGODB_URI || "", { useNewUrlParser: true });
 
-        this.app.use(morgan(':remote-addr - :remote-user [:date[clf]] ":method :url HTTP/:http-version" :status :res[content-length]', { stream: accessLogStream}));
-        this.app.use(morgan('dev'));
+        this.app.use(morgan(':date[iso] :method :url :status :response-time[0]ms :res[content-length]Bytes', { stream: stream }));
+        this.app.use(morgan(':date[iso] :method :url :status :response-time[0]ms :res[content-length]Bytes'));
         this.app.use('/uploads', express.static('uploads'));
         this.app.use(bodyParser.urlencoded({ extended: true }))
         this.app.use(bodyParser.json());
