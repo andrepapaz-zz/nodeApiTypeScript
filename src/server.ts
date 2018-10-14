@@ -38,7 +38,7 @@ export class Server {
             maxFiles: 10
         })
 
-        const MONGO_URI: string = 'mongodb://192.168.99.100:27017/martan';
+        const MONGO_URI: string = 'mongodb://localhost:27017/martan';
         mongoose.connect(MONGO_URI || process.env.MONGODB_URI || "", { useNewUrlParser: true });
 
         this.app.use(morgan(':date[iso] :method :url :status :response-time[0]ms :res[content-length]Bytes', { stream: stream }));

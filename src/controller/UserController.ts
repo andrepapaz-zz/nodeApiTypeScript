@@ -14,10 +14,10 @@ export class UserController {
     private routes() {
 
         this._router.get('/', this.all);
-        this._router.get('/:cod', this.one);
+        this._router.get('/:_id', this.one);
         this._router.post('/', this.create);
-        this._router.put('/:cod', this.update);
-        this._router.delete('/:cod', this.delete);
+        this._router.put('/:_id', this.update);
+        this._router.delete('/:_id', this.delete);
     }
 
     public all(req: Request, res: Response): void {
@@ -31,9 +31,9 @@ export class UserController {
     }
 
     public one(req: Request, res: Response): void {
-        const cod = req.params.cod;
+        const _id = req.params._id;
 
-        User.findOne({ cod })
+        User.findOne({ _id })
             .then((data) => {
                 res.status(200).json({ data });
             })
@@ -51,13 +51,13 @@ export class UserController {
 
         const salt = bcrypt.genSaltSync(10);
 
-        bcrypt.hash(password, salt, () => {}, (err: Error, hash: string) => {
-            
+        bcrypt.hash(password, salt, () => { }, (err: Error, hash: string) => {
+
             const user = new User({
                 email,
                 password: hash
             });
-    
+
             user
                 .save()
                 .then((data) => {
@@ -66,27 +66,39 @@ export class UserController {
                 .catch((error) => {
                     res.status(500).json({ error });
                 });
-                
+
         });
 
     }
 
     public update(req: Request, res: Response): void {
-        const cod = req.params.cod;
+        const _id = req.params._id;
 
-        User.findOneAndUpdate({ cod }, req.body)
-            .then((data) => {
-                res.status(200).json({ data });
-            })
-            .catch((error) => {
-                res.status(500).json({ error });
-            });
+        let userUpdated = req.body;
+
+        const salt = bcrypt.genSaltSync(10);
+
+        bcrypt.hash(userUpdated.password, salt, () => { }, (err: Error, hash: string) => {
+
+            userUpdated.password = hash;
+
+            User.findOneAndUpdate({ _id }, userUpdated)
+                .then((data) => {
+                    res.status(200).json({ data });
+                })
+                .catch((error) => {
+                    res.status(500).json({ error });
+                });
+
+        });
+
+
     }
 
     public delete(req: Request, res: Response): void {
-        const cod = req.params.cod;
+        const _id = req.params._id;
 
-        User.findOneAndRemove({ cod })
+        User.findOneAndRemove({ _id })
             .then(() => {
                 res.status(204).end();
             })
