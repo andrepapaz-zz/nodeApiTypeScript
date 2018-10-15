@@ -1,6 +1,8 @@
 {
     "env": {
         "PORT": 3000,
-        "NODE_ENV": "producao"
+        "NODE_ENV": "producao",
+        "JWT_KEY": "secrettest",
+        "DO_JWT_VALIDATION": "false"
     }
 }

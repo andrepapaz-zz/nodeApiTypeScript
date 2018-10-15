@@ -1,6 +1,7 @@
 import { Request, Response, Router } from 'express';
 import User from '../model/User';
 import * as bcrypt from 'bcrypt-nodejs';
+import {CheckAuth} from '../middleware/CheckAuth';
 
 export class UserController {
 
@@ -13,7 +14,8 @@ export class UserController {
 
     private routes() {
 
-        this._router.get('/', this.all);
+        let checkauth = new CheckAuth();
+        this._router.get('/', checkauth.verifyToken, this.all);
         this._router.get('/:_id', this.one);
         this._router.post('/', this.create);
         this._router.put('/:_id', this.update);
