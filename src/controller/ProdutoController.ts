@@ -1,6 +1,9 @@
 import { Request, Response, Router } from 'express';
-import Produto from '../model/Produto';
+import ProdutoSchema from '../schema/ProdutoSchema';
 import * as multer from 'multer';
+import { ProdutoService } from '../service/ProdutoService';
+import { ICRUDService } from '../service/ICRUDService';
+import { Produto } from '../model/Produto';
 
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
@@ -31,25 +34,27 @@ const upload = multer({
 export class ProdutoController {
 
     private _router: Router;
+    private _service: ICRUDService<Produto, String>;
 
     constructor() {
+        this._service = new ProdutoService();
         this._router = Router();
         this.routes();
     }
 
     private routes() {
 
-        this._router.get('/', this.all);
-        this._router.get('/:cod', this.one);
+        this._router.get('/', this.all.bind(this));
+        this._router.get('/:cod', this.one.bind(this));
         this._router.post('/', upload.single('productImage'), this.create);
         this._router.put('/:cod', this.update);
         this._router.delete('/:cod', this.delete);
     }
 
     public all(req: Request, res: Response): void {
-        Produto.find()
-            .then((data) => {
-                res.status(200).json({ data });
+        this._service.listAll()
+            .then(produtos => {
+                res.json({ data: produtos })
             })
             .catch((error) => {
                 res.status(500).json({ error });
@@ -59,7 +64,7 @@ export class ProdutoController {
     public one(req: Request, res: Response): void {
         const cod = req.params.cod;
 
-        Produto.findOne({ cod })
+        this._service.getOne(cod)
             .then((data) => {
                 res.status(200).json({ data });
             })
@@ -76,10 +81,10 @@ export class ProdutoController {
             descricao,
             valor
         } = req.body;
-        
+
         const image = req.file.path;
 
-        const produto = new Produto({
+        const produtoSchema = new ProdutoSchema({
             cod,
             nome,
             descricao,
@@ -87,7 +92,7 @@ export class ProdutoController {
             image
         });
 
-        produto
+        produtoSchema
             .save()
             .then((data) => {
                 res.status(201).json({ data });
@@ -100,7 +105,7 @@ export class ProdutoController {
     public update(req: Request, res: Response): void {
         const cod = req.params.cod;
 
-        Produto.findOneAndUpdate({ cod }, req.body)
+        ProdutoSchema.findOneAndUpdate({ cod }, req.body)
             .then((data) => {
                 res.status(200).json({ data });
             })
@@ -112,7 +117,7 @@ export class ProdutoController {
     public delete(req: Request, res: Response): void {
         const cod = req.params.cod;
 
-        Produto.findOneAndRemove({ cod })
+        ProdutoSchema.findOneAndRemove({ cod })
             .then(() => {
                 res.status(204).end();
             })
