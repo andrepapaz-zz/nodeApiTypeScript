@@ -18,7 +18,8 @@
                 "PORT": 3000,
                 "NODE_ENV": "producao",
                 "JWT_KEY": "secrettest",
-                "DO_JWT_VALIDATION": "false"
+                "DO_JWT_VALIDATION": "false",
+                "MONGODB_URI": "mongodb://localhost:27017/martan"
             },
             "port": 9229
         }

@@ -1,0 +1,31 @@
+version: '3'
+
+services:
+
+  mongodb:
+    image: mongo
+    container_name: mongodb
+    volumes:
+      - ./data/db:/data/db
+      - ./data/initMongo:/docker-entrypoint-initdb.d/
+    ports:
+      - 27017:27017
+    networks: 
+      - production-network
+
+  nodeapitypescript:
+    build: 
+      dockerfile: Dockerfile
+      context: .
+    image: andrepapaz/nodeapitypescript
+    container_name: nodeapitypescript
+    ports:
+      - 3000:3000
+    networks: 
+      - production-network
+    depends_on: 
+      - "mongodb"
+
+networks: 
+  production-network:
+    driver: bridge
