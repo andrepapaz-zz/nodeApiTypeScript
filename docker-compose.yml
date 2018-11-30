@@ -7,7 +7,6 @@ services:
     container_name: mongodb
     volumes:
       - ./data/db:/data/db
-      - ./data/initMongo:/docker-entrypoint-initdb.d/
     ports:
       - 27017:27017
     networks: 
@@ -19,6 +18,8 @@ services:
       context: .
     image: andrepapaz/nodeapitypescript
     container_name: nodeapitypescript
+    environment:
+      WAIT_HOSTS: mongodb:27017
     ports:
       - 3000:3000
     networks: 
