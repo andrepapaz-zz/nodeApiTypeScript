@@ -14,7 +14,8 @@ services:
   nodeapitypescript:
     image: andrepapaz/nodeapitypescript
     environment:
-      WAIT_HOSTS: mongodb:27017
+      - WAIT_HOSTS=mongodb:27017
+      - DO_JWT_VALIDATION=true
     ports:
       - 3000:3000
     networks: 
@@ -24,4 +25,4 @@ services:
 
 networks: 
   interna:
-    driver: overlay
+    driver: bridge

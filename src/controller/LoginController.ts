@@ -46,7 +46,7 @@ export class LoginController {
                             {
                                 expiresIn: 60
                             })
-
+                            // TODO: Colocar o tempo de expiração em Variavel de ambiente
                             return res.json({
                                 message: 'Auth Successful',
                                 token
